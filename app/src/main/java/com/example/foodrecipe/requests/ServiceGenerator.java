@@ -1,5 +1,5 @@
 package com.example.foodrecipe.requests;
-
+import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.utils.Constants;
 
 import retrofit2.Retrofit;

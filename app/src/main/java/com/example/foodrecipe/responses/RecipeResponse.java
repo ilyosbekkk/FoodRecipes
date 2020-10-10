@@ -4,7 +4,7 @@ import com.example.foodrecipe.models.Recipe;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class RecipeResponce {
+public class RecipeResponse {
 
     @SerializedName("recipe")
     @Expose()

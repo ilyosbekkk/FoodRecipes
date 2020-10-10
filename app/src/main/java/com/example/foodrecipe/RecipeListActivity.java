@@ -5,17 +5,19 @@ package com.example.foodrecipe;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
+
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.requests.RecipeApi;
 import com.example.foodrecipe.requests.ServiceGenerator;
+import com.example.foodrecipe.responses.RecipeResponse;
 import com.example.foodrecipe.responses.RecipeSearchResponse;
+import com.example.foodrecipe.viewmodels.RecipeListViewModel;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,62 +28,51 @@ import retrofit2.Response;
 public class RecipeListActivity extends BaseActivity{
 
 
+
+    private RecipeListViewModel mRecipeListViewModel;
+
     Button button;
     private static final String TAG = "RecipeListActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
-        button = findViewById(R.id.test);
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              testRetrofitRequest();
-            }
-        });
-
-
+        mRecipeListViewModel = new ViewModelProvider(this).get(RecipeListViewModel.class);
+        subscribeObservers();
     }
 
 
-    //region test retrofit request
-    private void testRetrofitRequest(){
-        RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
-        Call<RecipeSearchResponse> responseCall = recipeApi.searchRecipe("chicken breas", "1");
 
-        responseCall.enqueue(new Callback<RecipeSearchResponse>() {
-
-
+    //region observers
+    private void subscribeObservers(){
+        mRecipeListViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
-            public void onResponse(Call<RecipeSearchResponse> call, Response<RecipeSearchResponse> response) {
-                Log.d(TAG, "onResponse: Server Response" + response.toString());
+            public void onChanged(List<Recipe> recipes) {
+
+            }
+        });
+    }
+    //endregion
+    //region recipe test for get single recipe
+    private void testGetRetrofit(){
+        RecipeApi recipeApi = ServiceGenerator.getRecipeApi();
+        Call<RecipeResponse> responceCall = recipeApi.getRecipe("49421");
+        responceCall.enqueue(new Callback<RecipeResponse>() {
+            @Override
+            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
                 if(response.code() == 200){
                     assert response.body() != null;
-                    Log.d(TAG, "onResponse: " + response.body().toString());
-                    List<Recipe> recipes = new ArrayList<>(response.body().getRecipes());
-                    for(Recipe recipe: recipes){
-                        Log.d(TAG, "onResponse: " + recipe.getTitle());
-                    }
-                }
-                else{
-                    try {
-                        assert response.errorBody() != null;
-                        Log.d(TAG, "onResponse: " + response.errorBody().toString());
-
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
+                    Log.d(TAG, "onResponse: " +response.body().getRecipe().getTitle());
+                    Log.d(TAG, "onResponse: " + response.body().getRecipe().getImage_url());
                 }
             }
 
             @Override
-            public void onFailure(Call<RecipeSearchResponse> call, Throwable t) {
+            public void onFailure(Call<RecipeResponse> call, Throwable t) {
 
             }
         });
     }
+    //endregion
 }
 
