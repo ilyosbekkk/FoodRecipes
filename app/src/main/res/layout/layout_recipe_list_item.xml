@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/recipe_image_height"
+                android:src="@drawable/ic_launcher_background"/>
+
+            <TextView
+                android:layout_marginStart="10dp"
+                android:textSize="@dimen/recipe_title_text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is gonna be the name of recipe"
+                android:textColor="#000000"
+                android:textColorHint="#00FFFFFF" />
+
+            <LinearLayout
+
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:weightSum="100"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_weight="70"
+                    android:textSize="@dimen/recipe_publisher_text_size"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Publisher"
+                    />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="30"
+                    android:gravity="right"
+                    android:text="100"
+                    android:textColor="@color/red" />
+
+
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
