@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
     android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <androidx.cardview.widget.CardView
+        app:cardCornerRadius="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,16 +19,19 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/recipe_image_height"
-                android:src="@drawable/ic_launcher_background"/>
+                android:src="@drawable/ic_launcher_background"
+                android:contentDescription="@string/no_description" />
 
             <TextView
+                android:id="@+id/title"
                 android:layout_marginStart="10dp"
                 android:textSize="@dimen/recipe_title_text_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is gonna be the name of recipe"
+                android:text="@string/this_is_gonna_be_the_name_of_recipe"
                 android:textColor="#000000"
                 android:textColorHint="#00FFFFFF" />
 
@@ -38,20 +45,23 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/publisher"
                     android:layout_weight="70"
                     android:textSize="@dimen/recipe_publisher_text_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Publisher"
+                    android:text="@string/publisher"
                     />
 
                 <TextView
+                    android:id="@+id/social_rank"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="30"
                     android:gravity="right"
-                    android:text="100"
-                    android:textColor="@color/red" />
+                    android:text="@string/_100"
+                    android:textColor="@color/red"
+                    tools:ignore="RtlHardcoded" />
 
 
 
