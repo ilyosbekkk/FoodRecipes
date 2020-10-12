@@ -3,25 +3,19 @@ package com.example.foodrecipe;
 
 import android.os.Bundle;
 
-import android.util.Log;
-
 
 import androidx.appcompat.widget.SearchView;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodrecipe.adapters.OnRecipeClickListener;
 import com.example.foodrecipe.adapters.RecipeRecyclerAdapter;
-import com.example.foodrecipe.models.Recipe;
+import com.example.foodrecipe.utils.VerticalSpacingItemDecorator;
 import com.example.foodrecipe.viewmodels.RecipeListViewModel;
 
 
-
-
 public class RecipeListActivity extends BaseActivity implements OnRecipeClickListener {
-
 
 
     //region UI components
@@ -31,6 +25,8 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     RecipeRecyclerAdapter mAdapter;
     private RecipeListViewModel mRecipeListViewModel;
     private static final String TAG = "RecipeListActivity";
+    private SearchView mSearchView;
+
     //endregion
     //region Override(s)
     @Override
@@ -39,35 +35,36 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
         setContentView(R.layout.activity_recipe_list);
         mRecyclerView = findViewById(R.id.recipe_list);
         mRecipeListViewModel = new ViewModelProvider(this).get(RecipeListViewModel.class);
-
+        mSearchView = findViewById(R.id.searchView);
 
         subscribeObservers();
         initRecyclerView();
         initSearchView();
-        if(!mRecipeListViewModel.isViewingRecipes())
+        if (!mRecipeListViewModel.ismViewingRecipes())
             displaySearchCategories();
 
     }
+
     //endregion
     //region Subscribe Observers
     private void subscribeObservers() {
         mRecipeListViewModel.getRecipes().observe(this, recipes -> {
-           if(recipes!=null)
-               mAdapter.setmRecipes(recipes);
-            assert recipes != null;
-            for (int i = 0; i < recipes.size(); i++) {
-                Log.d(TAG, "onChanged: " + recipes.get(i).getTitle());
-            }
-
+            if (recipes != null && mRecipeListViewModel.ismViewingRecipes())
+                mRecipeListViewModel.setmIsPerformingQuery(false);
+                mAdapter.setmRecipes(recipes);
         });
     }
+
     //endregion
     //region Initialize Recycler View
-     private  void initRecyclerView(){
+    private void initRecyclerView() {
         mAdapter = new RecipeRecyclerAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-     }
+        VerticalSpacingItemDecorator verticalSpacingItemDecorator = new VerticalSpacingItemDecorator(30);
+        mRecyclerView.addItemDecoration(verticalSpacingItemDecorator);
+    }
+
     //endregion
     //region onClickListener override methods
     @Override
@@ -77,18 +74,21 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
 
     @Override
     public void onCategoryClick(String category) {
-       mAdapter.displayLoading();
-       mRecipeListViewModel.searchRecipesApi(category, 1);
+        mAdapter.displayLoading();
+        mRecipeListViewModel.searchRecipesApi(category, 1);
+        mSearchView.clearFocus();
     }
+
     //endregion
     //region Initialize Search View
-    private void initSearchView(){
-        final SearchView searchView = findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    private void initSearchView() {
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mAdapter.displayLoading();
                 mRecipeListViewModel.searchRecipesApi(query, 1);
+                mSearchView.clearFocus();
                 return false;
             }
 
@@ -98,14 +98,27 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
             }
         });
     }
+
     //endregion
     //region Display Search Categories
-    private void displaySearchCategories(){
-        mRecipeListViewModel.setViewingRecipes(false);
+    private void displaySearchCategories() {
+        mRecipeListViewModel.setmViewingRecipes(false);
         mAdapter.displaySearchCategories();
     }
     //endregion
+    //region onbackpressed
 
+    @Override
+    public void onBackPressed() {
+        if(mRecipeListViewModel.onBackPressed()){
+            super.onBackPressed();
+        }
+        else{
+            displaySearchCategories();
+        }
+    }
+
+    //endregion
 
 }
 

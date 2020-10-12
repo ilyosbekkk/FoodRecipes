@@ -44,9 +44,8 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         if (viewType == LOADING_TYPE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_loading_list_item, parent, false);
             return new LoadingViewHolder(view);
-        }
-        else if(viewType== CATEGORY_TYPE){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_list_items, parent,  false);
+        } else if (viewType == CATEGORY_TYPE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_list_items, parent, false);
             return new CategoryViewHolder(view, mOnRecipeClickListener);
 
         }
@@ -57,8 +56,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position)
-    {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
         if (itemViewType == RECIPE_TYPE) {
             RequestOptions options = new RequestOptions().placeholder(R.drawable.ic_launcher_background);
@@ -66,23 +64,21 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((RecipeViewHolder) holder).title.setText(mRecipes.get(position).getTitle());
             ((RecipeViewHolder) holder).publisher.setText(mRecipes.get(position).getPublisher());
             ((RecipeViewHolder) holder).social_score.setText(String.valueOf(Math.round(mRecipes.get(position).getSocial_rank())));
-        }
-        else if(itemViewType == CATEGORY_TYPE){
+        } else if (itemViewType == CATEGORY_TYPE) {
 
             RequestOptions options = new RequestOptions().placeholder(R.drawable.ic_launcher_background);
-            Uri path  =  Uri.parse("android.resource://com.example.foodrecipe/drawable/" + mRecipes.get(position).getImage_url());
+            Uri path = Uri.parse("android.resource://com.example.foodrecipe/drawable/" + mRecipes.get(position).getImage_url());
             Glide.with(holder.itemView.getContext()).setDefaultRequestOptions(options).load(path).into(((CategoryViewHolder) holder).categoryImageView);
 
-            ((CategoryViewHolder)holder).categoryTitle.setText(mRecipes.get(position).getTitle());
+            ((CategoryViewHolder) holder).categoryTitle.setText(mRecipes.get(position).getTitle());
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(mRecipes.get(position).getSocial_rank() == -1){
+        if (mRecipes.get(position).getSocial_rank() == -1) {
             return CATEGORY_TYPE;
-        }
-        else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
+        } else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
             return LOADING_TYPE;
         }
         return RECIPE_TYPE;
@@ -105,14 +101,14 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     //endregion
     //region display categories
-    public void displaySearchCategories(){
+    public void displaySearchCategories() {
         List<Recipe> categories = new ArrayList<>();
-        for(int i = 0; i< Constants.DEFAULT_SEARCH_CATEGORIES.length; i++){
-           Recipe recipe = new Recipe();
-           recipe.setTitle(Constants.DEFAULT_SEARCH_CATEGORIES[i]);
-           recipe.setImage_url(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
-           recipe.setSocial_rank(-1);
-           categories.add(recipe);
+        for (int i = 0; i < Constants.DEFAULT_SEARCH_CATEGORIES.length; i++) {
+            Recipe recipe = new Recipe();
+            recipe.setTitle(Constants.DEFAULT_SEARCH_CATEGORIES[i]);
+            recipe.setImage_url(Constants.DEFAULT_SEARCH_CATEGORY_IMAGES[i]);
+            recipe.setSocial_rank(-1);
+            categories.add(recipe);
         }
         mRecipes = categories;
         notifyDataSetChanged();
