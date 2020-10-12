@@ -44,6 +44,8 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
         subscribeObservers();
         initRecyclerView();
         initSearchView();
+        if(!mRecipeListViewModel.isViewingRecipes())
+            displaySearchCategories();
 
     }
     //endregion
@@ -75,7 +77,8 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
 
     @Override
     public void onCategoryClick(String category) {
-
+       mAdapter.displayLoading();
+       mRecipeListViewModel.searchRecipesApi(category, 1);
     }
     //endregion
     //region Initialize Search View
@@ -94,6 +97,12 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
                 return false;
             }
         });
+    }
+    //endregion
+    //region Display Search Categories
+    private void displaySearchCategories(){
+        mRecipeListViewModel.setViewingRecipes(false);
+        mAdapter.displaySearchCategories();
     }
     //endregion
 
