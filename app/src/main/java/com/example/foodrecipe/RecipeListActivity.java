@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,17 +23,16 @@ import com.example.foodrecipe.viewmodels.RecipeListViewModel;
 public class RecipeListActivity extends BaseActivity implements OnRecipeClickListener {
 
 
-    private RecipeListViewModel mRecipeListViewModel;
 
     //region UI components
     RecyclerView mRecyclerView;
     //endregion
-
-    //region vars
+    //region Vars
     RecipeRecyclerAdapter mAdapter;
-    //endregion
+    private RecipeListViewModel mRecipeListViewModel;
     private static final String TAG = "RecipeListActivity";
-    //region override
+    //endregion
+    //region Override(s)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +42,12 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
 
 
         subscribeObservers();
-        testRetrofitRequest();
         initRecyclerView();
+        initSearchView();
 
     }
     //endregion
-    //region observers
+    //region Subscribe Observers
     private void subscribeObservers() {
         mRecipeListViewModel.getRecipes().observe(this, recipes -> {
            if(recipes!=null)
@@ -59,25 +59,15 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
 
         });
     }
-
     //endregion
-    //region searchRecipesApi
-    private void searchRecipesApi(String query, int pageNumber) {
-        mRecipeListViewModel.searchRecipesApi(query, pageNumber);
-    }
-    //endregion
-    //region init recyclerview
+    //region Initialize Recycler View
      private  void initRecyclerView(){
         mAdapter = new RecipeRecyclerAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
      }
     //endregion
-    //region test retrofit request
-    private void testRetrofitRequest() {
-        searchRecipesApi("chicken breast", 1);
-    }
-
+    //region onClickListener override methods
     @Override
     public void onRecipeClick(int position) {
 
@@ -86,6 +76,24 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     @Override
     public void onCategoryClick(String category) {
 
+    }
+    //endregion
+    //region Initialize Search View
+    private void initSearchView(){
+        final SearchView searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.displayLoading();
+                mRecipeListViewModel.searchRecipesApi(query, 1);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
     //endregion
 

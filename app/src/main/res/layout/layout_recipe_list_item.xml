@@ -22,8 +22,9 @@
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/recipe_image_height"
-                android:src="@drawable/ic_launcher_background"
-                android:contentDescription="@string/no_description" />
+                android:contentDescription="@string/no_description"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_launcher_background" />
 
             <TextView
                 android:id="@+id/title"

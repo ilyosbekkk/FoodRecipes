@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,8 +7,34 @@
     tools:context=".RecipeListActivity">
 
 
-   <androidx.recyclerview.widget.RecyclerView
+  <!-- region collapsing toolbar and recyclerview-->
+   <com.google.android.material.appbar.AppBarLayout
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/recipe_list"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+       android:layout_height="wrap_content">
+
+      <androidx.appcompat.widget.Toolbar
+          android:layout_width="match_parent"
+          android:layout_height="?attr/actionBarSize"
+          android:id="@+id/toolbar"
+          app:layout_scrollFlags="scroll|enterAlways">
+
+
+         <!--region searchView-->
+         <androidx.appcompat.widget.SearchView
+             android:layout_width="match_parent"
+             android:layout_height="?attr/actionBarSize"
+            android:id="@+id/searchView"
+            app:queryHint="Search..."/>
+
+
+      </androidx.appcompat.widget.Toolbar>
+   </com.google.android.material.appbar.AppBarLayout>
+
+
+   <androidx.recyclerview.widget.RecyclerView
+       app:layout_behavior="@string/appbar_scrolling_view_behavior"
+       android:id="@+id/recipe_list"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
