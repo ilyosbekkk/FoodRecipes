@@ -2,8 +2,11 @@ package com.example.foodrecipe;
 
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,7 +46,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
         if (!mRecipeListViewModel.ismViewingRecipes())
             displaySearchCategories();
 
+        setSupportActionBar(findViewById(R.id.toolbar));
     }
+
 
     //endregion
     //region Subscribe Observers
@@ -51,7 +56,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
         mRecipeListViewModel.getRecipes().observe(this, recipes -> {
             if (recipes != null && mRecipeListViewModel.ismViewingRecipes())
                 mRecipeListViewModel.setmIsPerformingQuery(false);
-                mAdapter.setmRecipes(recipes);
+            mAdapter.setmRecipes(recipes);
         });
     }
 
@@ -110,15 +115,31 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
 
     @Override
     public void onBackPressed() {
-        if(mRecipeListViewModel.onBackPressed()){
+
+        if (mRecipeListViewModel.onBackPressed()) {
             super.onBackPressed();
-        }
-        else{
+        } else {
             displaySearchCategories();
         }
     }
 
     //endregion
+    //region menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.recipe_search_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.action_categories) {
+            displaySearchCategories();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    //endregion
 }
 

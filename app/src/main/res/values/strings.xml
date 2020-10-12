@@ -4,4 +4,5 @@
     <string name="publisher">Publisher</string>
     <string name="this_is_gonna_be_the_name_of_recipe">This is gonna be the name of recipe</string>
     <string name="no_description">No Description</string>
+    <string name="categories">Categories</string>
 </resources>
