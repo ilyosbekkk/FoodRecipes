@@ -25,7 +25,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     //region vars
     private List<Recipe> mRecipes;
-    private OnRecipeClickListener mOnRecipeClickListener;
+    private final OnRecipeClickListener mOnRecipeClickListener;
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
     private static final int CATEGORY_TYPE = 3;
@@ -40,7 +40,6 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-
         if (viewType == LOADING_TYPE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_loading_list_item, parent, false);
             return new LoadingViewHolder(view);
@@ -51,10 +50,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recipe_list_item, parent, false);
         return new RecipeViewHolder(view, mOnRecipeClickListener);
-
-
     }
-
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
@@ -65,7 +61,6 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((RecipeViewHolder) holder).publisher.setText(mRecipes.get(position).getPublisher());
             ((RecipeViewHolder) holder).social_score.setText(String.valueOf(Math.round(mRecipes.get(position).getSocial_rank())));
         } else if (itemViewType == CATEGORY_TYPE) {
-
             RequestOptions options = new RequestOptions().placeholder(R.drawable.ic_launcher_background);
             Uri path = Uri.parse("android.resource://com.example.foodrecipe/drawable/" + mRecipes.get(position).getImage_url());
             Glide.with(holder.itemView.getContext()).setDefaultRequestOptions(options).load(path).into(((CategoryViewHolder) holder).categoryImageView);
@@ -78,7 +73,12 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemViewType(int position) {
         if (mRecipes.get(position).getSocial_rank() == -1) {
             return CATEGORY_TYPE;
-        } else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
+        }
+        else if(position ==mRecipes.size() - 1 && position !=0 && !mRecipes.get(position).getTitle().equals("EXHAUSTED")){
+             return  LOADING_TYPE;
+
+        }
+        else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
             return LOADING_TYPE;
         }
         return RECIPE_TYPE;

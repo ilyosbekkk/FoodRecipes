@@ -9,14 +9,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
 
-    private static Retrofit.Builder retrofitBuilder =
+    private static final Retrofit.Builder retrofitBuilder =
             new Retrofit.Builder()
                     .baseUrl(Constants.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
-    private static Retrofit retrofit = retrofitBuilder.build();
+    /*
+      RetrofitBuilder -> baseUrl -> Converting `data to json -> create or build
+     */
 
-    private static RecipeApi recipeApi = retrofit.create(RecipeApi.class);
+
+
+    private static final Retrofit retrofit = retrofitBuilder.build();
+
+    private static final RecipeApi recipeApi = retrofit.create(RecipeApi.class);
 
     public static RecipeApi getRecipeApi(){
         return recipeApi;

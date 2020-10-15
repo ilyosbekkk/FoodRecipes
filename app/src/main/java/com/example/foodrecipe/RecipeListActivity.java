@@ -68,6 +68,16 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         VerticalSpacingItemDecorator verticalSpacingItemDecorator = new VerticalSpacingItemDecorator(30);
         mRecyclerView.addItemDecoration(verticalSpacingItemDecorator);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+
+               if(!mRecyclerView.canScrollVertically(1)){
+                mRecipeListViewModel.searchNextPage();
+               }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     //endregion

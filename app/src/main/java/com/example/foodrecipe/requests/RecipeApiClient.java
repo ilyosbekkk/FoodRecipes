@@ -22,27 +22,33 @@ import retrofit2.Response;
 import static com.example.foodrecipe.utils.Constants.NETWORK_TIMEOUT;
 
 public class RecipeApiClient {
+
+    //region variables
     private static final String TAG = "RecipeApiClient";
     private static RecipeApiClient instance;
-    private MutableLiveData<List<Recipe>> mRecipes;
+    private final MutableLiveData<List<Recipe>> mRecipes;
     RetrieveRecipesRunnable mRetrieveRecipesRunnable;
-
+    //endregion
+    //region singleton
     public static RecipeApiClient getInstance() {
         if (instance == null) {
             instance = new RecipeApiClient();
         }
         return instance;
     }
-
+    //endregion
+    //region constructor
     private RecipeApiClient() {
         mRecipes = new MutableLiveData<>();
 
     }
-
+    //endregion
+    //region getRecipes that returns live  data
     public LiveData<List<Recipe>> getRecipes() {
         return mRecipes;
     }
-
+    //endregion
+    //region searchRecipesApi
     public void searchRecipesApi(String query, int pageNumber) {
         if(mRetrieveRecipesRunnable != null)
             mRetrieveRecipesRunnable = null;
@@ -53,12 +59,13 @@ public class RecipeApiClient {
             handler.cancel(true);
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
     }
-
+    //endregion
+    //region retrieveRecipeRunnable
     private class RetrieveRecipesRunnable implements Runnable {
 
 
-        private String query;
-        private int pageNumber;
+        private final String query;
+        private final int pageNumber;
         boolean cancelRequest = false;
 
         public RetrieveRecipesRunnable(String query,  int pageNumber){
@@ -97,22 +104,29 @@ public class RecipeApiClient {
 
         }
 
+
+        //region returns call back from remote data source
         private Call<RecipeSearchResponse> getRecipes(String query, int pageNumber) {
             return ServiceGenerator.getRecipeApi().searchRecipe(
                     query,
                     String.valueOf(pageNumber)
             );
         }
+        //endregion
 
         private void cancelRequest() {
             Log.d(TAG, "cancelRequest: Cancelling Request");
             cancelRequest = true;
         }
     }
+
+    //endregion
+    //region cancelRequest
     public void cancelRequest(){
         if(mRetrieveRecipesRunnable !=null){
             mRetrieveRecipesRunnable.cancelRequest();
         }
     }
+    //endregion
 
 }

@@ -65,5 +65,12 @@ public class RecipeListViewModel extends ViewModel {
         this.mIsPerformingQuery = isPerformingQuery;
     }
     //endregion
+    //region searchNextPage
+    public void searchNextPage(){
+        if(!mIsPerformingQuery && mViewingRecipes){
+            mRecipeRepository.searchNextPage();
+        }
+    }
+    //endregion
 }
 
