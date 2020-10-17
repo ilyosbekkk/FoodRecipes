@@ -9,8 +9,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.foodrecipe.models.Recipe;
+import com.example.foodrecipe.viewmodels.IndividualRecipeViewModel;
+import com.example.foodrecipe.viewmodels.RecipeListViewModel;
+
+import java.util.Arrays;
 
 
 public class RecipeActivity extends BaseActivity {
@@ -20,6 +26,11 @@ public class RecipeActivity extends BaseActivity {
     private TextView mRecipeTitles, mRecipeRank;
     private LinearLayout mRecipeIngredientsLinearLayout;
     private ScrollView mScrollView;
+    //endregion
+
+    //region vars
+    IndividualRecipeViewModel mIndividualRecipeViewModel;
+
     //endregion
     private static final String TAG = "RecipeActivity";
 
@@ -32,10 +43,11 @@ public class RecipeActivity extends BaseActivity {
         mRecipeRank = findViewById(R.id.recipe_social_score);
         mRecipeIngredientsLinearLayout = findViewById(R.id.ingredients_container);
         mScrollView = findViewById(R.id.parent);
-
+        mIndividualRecipeViewModel = new ViewModelProvider(this).get(IndividualRecipeViewModel.class);
 
 
         getIncomingIntent();
+        subscribeobservers();
     }
 
 
@@ -43,9 +55,25 @@ public class RecipeActivity extends BaseActivity {
         if (getIntent().hasExtra("recipe")) {
             Recipe recipe = getIntent().getParcelableExtra("recipe");
             Log.d(TAG, "getIncomingIntent: " + recipe.getTitle());
-
+            getRecipeApi(recipe.getRecipe_id());
 
         }
+    }
+
+    private void subscribeobservers() {
+        Log.d(TAG, "subscribeobservers:  Entered");
+        mIndividualRecipeViewModel.getIndividualRecipe().observe(this, recipe -> {
+            if(recipe != null)
+            Log.d(TAG, "onChanged: "+ Arrays.toString(recipe.getIngredients()));
+            else
+                Log.d(TAG, "onChanged: Recipe is null");
+        });
+        Log.d(TAG, "subscribeobservers: Exit");
+
+    }
+
+    private void getRecipeApi(String recipe_id) {
+        mIndividualRecipeViewModel.getRecipeApi(recipe_id);
     }
 }
 

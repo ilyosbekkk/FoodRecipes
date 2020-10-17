@@ -15,6 +15,7 @@ public class RecipeRepository {
     private String mQuery;
     private int mPageNumber;
 
+
     public static RecipeRepository getInstance() {
         if (instance == null) {
             instance = new RecipeRepository();
@@ -30,6 +31,10 @@ public class RecipeRepository {
         return mRecipeApiClient.getRecipes();
     }
 
+    public LiveData<Recipe> getRecipe(){
+        return  mRecipeApiClient.getRecipe();
+    }
+
     public void searchRecipesApi(String query, int pageNumber) {
         if (pageNumber == 0) {
             pageNumber = 1;
@@ -39,11 +44,16 @@ public class RecipeRepository {
         mRecipeApiClient.searchRecipesApi(query, pageNumber);
     }
 
-    //region searchNextPage
+    public void getRecipeApi(String recipe_id){
+        mRecipeApiClient.getRecipeApi(recipe_id);
+
+    }
+
+
     public void searchNextPage(){
         searchRecipesApi(mQuery,  mPageNumber+1);
     }
-    ///endregion
+
     public void cancelRequest() {
         mRecipeApiClient.cancelRequest();
     }
