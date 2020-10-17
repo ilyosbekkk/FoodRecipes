@@ -154,7 +154,7 @@ public class RecipeApiClient {
     }
 
     //endregion
-    //region
+    //region retrieveRecipeRunnable
     private class RetrieveRecipeRunnable implements Runnable {
         private final String recipe_id;
         boolean cancelRequest = false;
@@ -195,7 +195,6 @@ public class RecipeApiClient {
             return ServiceGenerator.getRecipeApi().getRecipe(recipe_id);
         }
         //endregion
-
         //region cancelRequest
         private void cancelRequest() {
             Log.d(TAG, "cancelRequest: Cancelling Request");

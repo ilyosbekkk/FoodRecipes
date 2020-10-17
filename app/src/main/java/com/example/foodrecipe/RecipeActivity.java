@@ -3,6 +3,7 @@ package com.example.foodrecipe;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -15,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.viewmodels.IndividualRecipeViewModel;
 import com.example.foodrecipe.viewmodels.RecipeListViewModel;
+
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 
@@ -48,9 +51,12 @@ public class RecipeActivity extends BaseActivity {
 
         getIncomingIntent();
         subscribeobservers();
+
+
     }
 
 
+    //region get incoming intent
     private void getIncomingIntent() {
         if (getIntent().hasExtra("recipe")) {
             Recipe recipe = getIntent().getParcelableExtra("recipe");
@@ -59,23 +65,52 @@ public class RecipeActivity extends BaseActivity {
 
         }
     }
+    //endregion
 
+    //region subscribeobservers
     private void subscribeobservers() {
-        Log.d(TAG, "subscribeobservers:  Entered");
+
         mIndividualRecipeViewModel.getIndividualRecipe().observe(this, recipe -> {
-            if(recipe != null)
-            Log.d(TAG, "onChanged: "+ Arrays.toString(recipe.getIngredients()));
-            else
-                Log.d(TAG, "onChanged: Recipe is null");
+            if (recipe != null)
+                mScrollView.setVisibility(View.VISIBLE);
+            setUIproperties(recipe);
         });
-        Log.d(TAG, "subscribeobservers: Exit");
-
     }
+    //endregion
 
+    ///region getRecipeApi
     private void getRecipeApi(String recipe_id) {
         mIndividualRecipeViewModel.getRecipeApi(recipe_id);
     }
+
+    //endregion
+    //region set UI properties
+    public void setUIproperties(Recipe recipe) {
+
+        Log.d(TAG, "setUIproperties: " + Arrays.toString(recipe.getIngredients()));
+        TextView textView = new TextView(this);
+        mRecipeIngredientsLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout linearLayout = new LinearLayout(RecipeActivity.this);
+
+        String[] ingredients = recipe.getIngredients();
+        Log.d(TAG, "setUIproperties: Entering...");
+        for (int i = 0; i<ingredients.length; i++) {
+              if(i == 0){
+                  textView.setText(ingredients[i]);
+              }
+              else{
+                  textView.append("\n" + ingredients[i]);
+              }
+
+        }
+        mRecipeIngredientsLinearLayout.addView(textView);
+
+
+    }
+
+
 }
+//endregion
 
 
 
