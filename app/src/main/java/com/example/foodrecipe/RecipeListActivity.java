@@ -1,6 +1,7 @@
 package com.example.foodrecipe;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,9 +73,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
-               if(!mRecyclerView.canScrollVertically(1)){
-                mRecipeListViewModel.searchNextPage();
-               }
+                if (!mRecyclerView.canScrollVertically(1)) {
+                    mRecipeListViewModel.searchNextPage();
+                }
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
@@ -84,6 +85,9 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     //region onClickListener override methods
     @Override
     public void onRecipeClick(int position) {
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra("recipe", mAdapter.getSelectedRecipe(position));
+        startActivity(intent);
 
     }
 
