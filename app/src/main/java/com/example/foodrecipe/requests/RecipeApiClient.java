@@ -172,8 +172,9 @@ public class RecipeApiClient {
                     return;
                 } else {
                     if (response.code() == 200) {
-                        Recipe recipe = new Recipe();
-                        mRecipe.postValue(recipe);
+
+                        mRecipe.postValue(response.body().getRecipe());
+                        Log.d(TAG, "run: " + response.body().toString());
                     } else {
                         String errorMessage = response.errorBody().toString();
                         Log.d(TAG, "run: " + errorMessage);
@@ -204,7 +205,6 @@ public class RecipeApiClient {
 
 
     }
-
     //endregion
     //region cancelRequest
     public void cancelRequest() {
