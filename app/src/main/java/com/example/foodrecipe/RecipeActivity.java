@@ -1,5 +1,6 @@
 package com.example.foodrecipe;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -16,9 +17,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.viewmodels.IndividualRecipeViewModel;
 import com.example.foodrecipe.viewmodels.RecipeListViewModel;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 
 
@@ -71,9 +76,14 @@ public class RecipeActivity extends BaseActivity {
     private void subscribeobservers() {
 
         mIndividualRecipeViewModel.getIndividualRecipe().observe(this, recipe -> {
-            if (recipe != null)
+            if (recipe != null) {
                 mScrollView.setVisibility(View.VISIBLE);
-            setUIproperties(recipe);
+                try {
+                    setUIproperties(recipe);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         });
     }
     //endregion
@@ -85,23 +95,35 @@ public class RecipeActivity extends BaseActivity {
 
     //endregion
     //region set UI properties
-    public void setUIproperties(Recipe recipe) {
+    public void setUIproperties(Recipe recipe) throws IOException {
+
+
+        mRecipeTitles.setText(recipe.getTitle());
+        mRecipeRank.setText(String.valueOf(Math.round(recipe.getSocial_rank())));
+        Picasso.get().load(recipe.getImage_url()).into(mImageView, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+            @Override
+            public void onError(Exception e) {
+                Log.d(TAG, "onError: ERROR occured");
+            }
+        });
 
         Log.d(TAG, "setUIproperties: " + Arrays.toString(recipe.getIngredients()));
         TextView textView = new TextView(this);
         mRecipeIngredientsLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout linearLayout = new LinearLayout(RecipeActivity.this);
 
         String[] ingredients = recipe.getIngredients();
         Log.d(TAG, "setUIproperties: Entering...");
-        for (int i = 0; i<ingredients.length; i++) {
-              if(i == 0){
-                  textView.setText(ingredients[i]);
-              }
-              else{
-                  textView.append("\n" + ingredients[i]);
-              }
-
+        for (int i = 0; i < ingredients.length; i++) {
+            Log.d(TAG, "setUIproperties: " + ingredients[i]);
+            if (i == 0) {
+                textView.setText(ingredients[i]);
+            } else {
+                textView.append("\n" + ingredients[i]);
+            }
         }
         mRecipeIngredientsLinearLayout.addView(textView);
 

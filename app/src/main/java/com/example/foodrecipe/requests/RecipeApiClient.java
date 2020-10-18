@@ -87,7 +87,7 @@ public class RecipeApiClient {
 
         AppExecutors.getInstance().networkIO().schedule(() -> {
             handler.cancel(true);
-        }, NETWORK_TIMEOUT, TimeUnit.MICROSECONDS);
+        }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
 
     }
 
@@ -172,10 +172,13 @@ public class RecipeApiClient {
                     return;
                 } else {
                     if (response.code() == 200) {
-
+                        Log.d(TAG, "run: " + response.code());
+                        assert response.body() != null;
                         mRecipe.postValue(response.body().getRecipe());
                         Log.d(TAG, "run: " + response.body().toString());
                     } else {
+                        Log.d(TAG, "run:  ERROR OCCURED");
+                        assert response.errorBody() != null;
                         String errorMessage = response.errorBody().toString();
                         Log.d(TAG, "run: " + errorMessage);
                         mRecipe.postValue(null);
@@ -184,7 +187,9 @@ public class RecipeApiClient {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.d(TAG, "run:  ERROR OCCURED in catch");
+                Log.d(TAG, "run: " + e.toString());
+
 
             }
         }
