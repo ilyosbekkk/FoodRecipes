@@ -1,10 +1,12 @@
 package com.example.foodrecipe.adapters;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,12 +25,14 @@ import java.util.List;
 public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
+    private static final String TAG = "Adapter";
     //region vars
     private List<Recipe> mRecipes;
     private final OnRecipeClickListener mOnRecipeClickListener;
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
     private static final int CATEGORY_TYPE = 3;
+    private static final int EXHAUSTEDE_TYPE = 4;
 
     public RecipeRecyclerAdapter(OnRecipeClickListener mOnRecipeClickListener) {
         this.mOnRecipeClickListener = mOnRecipeClickListener;
@@ -47,10 +51,15 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_list_items, parent, false);
             return new CategoryViewHolder(view, mOnRecipeClickListener);
 
+        } else if (viewType == EXHAUSTEDE_TYPE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_exhausted_list_item, parent, false);
+            return new ExhaustedViewHolder(view);
         }
+
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recipe_list_item, parent, false);
         return new RecipeViewHolder(view, mOnRecipeClickListener);
     }
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
@@ -73,13 +82,12 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getItemViewType(int position) {
         if (mRecipes.get(position).getSocial_rank() == -1) {
             return CATEGORY_TYPE;
-        }
-        else if(position ==mRecipes.size() - 1 && position !=0 && !mRecipes.get(position).getTitle().equals("EXHAUSTED")){
-             return  LOADING_TYPE;
-
-        }
-        else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
+        } else if (position == mRecipes.size() - 1 && position != 0 && !mRecipes.get(position).getTitle().equals("EXHAUSTED")) {
             return LOADING_TYPE;
+        } else if (mRecipes.get(position).getTitle().equals("LOADING...")) {
+            return LOADING_TYPE;
+        } else if (mRecipes.get(position).getTitle().equals("EXHAUSTED")) {
+            return EXHAUSTEDE_TYPE;
         }
         return RECIPE_TYPE;
     }
@@ -133,16 +141,35 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 return mRecipes.get(mRecipes.size() - 1).getTitle().equals("LOADING...");
             }
         }
-
         return false;
     }
 
     //endregion
 
+    public void displayExhausted() {
+        if (!isExhausted()) {
+            Recipe recipe = new Recipe();
+            recipe.setTitle("EXHAUSTED");
+            mRecipes.add(recipe);
+            notifyDataSetChanged();
+
+        }
+    }
+
+    private boolean isExhausted() {
+        if (mRecipes != null) {
+            if (mRecipes.size() > 0) {
+                return mRecipes.get(mRecipes.size() - 1).getTitle().equals("EXHAUSTED");
+            }
+        }
+        return false;
+
+    }
+
     //region getSelectedRecipe
-    public Recipe getSelectedRecipe(int position){
-        if(mRecipes != null){
-            if(mRecipes.size() > 0){
+    public Recipe getSelectedRecipe(int position) {
+        if (mRecipes != null) {
+            if (mRecipes.size() > 0) {
                 return mRecipes.get(position);
             }
         }

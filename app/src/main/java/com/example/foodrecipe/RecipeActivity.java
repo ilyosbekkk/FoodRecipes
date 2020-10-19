@@ -1,29 +1,19 @@
 package com.example.foodrecipe;
 
-import android.graphics.BitmapFactory;
+import com.example.foodrecipe.viewmodels.IndividualRecipeViewModel;
+import com.example.foodrecipe.models.Recipe;
+import androidx.lifecycle.ViewModelProvider;
+import com.squareup.picasso.Callback;
+import androidx.annotation.Nullable;
+import com.squareup.picasso.Picasso;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.foodrecipe.models.Recipe;
-import com.example.foodrecipe.viewmodels.IndividualRecipeViewModel;
-import com.example.foodrecipe.viewmodels.RecipeListViewModel;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 
 
@@ -103,8 +93,9 @@ public class RecipeActivity extends BaseActivity {
         Picasso.get().load(recipe.getImage_url()).into(mImageView, new Callback() {
             @Override
             public void onSuccess() {
-
+                Log.d(TAG, "onSuccess: Success in loading image");
             }
+
             @Override
             public void onError(Exception e) {
                 Log.d(TAG, "onError: ERROR occured");

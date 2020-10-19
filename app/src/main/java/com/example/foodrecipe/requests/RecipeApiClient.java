@@ -1,11 +1,14 @@
 package com.example.foodrecipe.requests;
 
 import android.util.Log;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodrecipe.AppExecutors;
+import com.example.foodrecipe.adapters.RecipeRecyclerAdapter;
 import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.responses.RecipeResponse;
 import com.example.foodrecipe.responses.RecipeSearchResponse;
@@ -71,6 +74,7 @@ public class RecipeApiClient {
         AppExecutors.getInstance().networkIO().schedule(() -> {
             //Let the User know it is timeout
             handler.cancel(true);
+
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
     }
 
@@ -199,6 +203,7 @@ public class RecipeApiClient {
         private Call<RecipeResponse> getSelectedRecipe(String recipe_id) {
             return ServiceGenerator.getRecipeApi().getRecipe(recipe_id);
         }
+
         //endregion
         //region cancelRequest
         private void cancelRequest() {
@@ -209,6 +214,7 @@ public class RecipeApiClient {
 
 
     }
+
     //endregion
     //region cancelRequest
     public void cancelRequest() {

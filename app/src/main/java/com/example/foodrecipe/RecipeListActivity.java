@@ -3,8 +3,10 @@ package com.example.foodrecipe;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -15,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.foodrecipe.adapters.OnRecipeClickListener;
 import com.example.foodrecipe.adapters.RecipeRecyclerAdapter;
+import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.utils.VerticalSpacingItemDecorator;
 import com.example.foodrecipe.viewmodels.RecipeListViewModel;
+import com.google.gson.internal.$Gson$Preconditions;
 
 
 public class RecipeListActivity extends BaseActivity implements OnRecipeClickListener {
@@ -55,9 +59,15 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     //region Subscribe Observers
     private void subscribeObservers() {
         mRecipeListViewModel.getRecipes().observe(this, recipes -> {
-            if (recipes != null && mRecipeListViewModel.ismViewingRecipes())
+            if (recipes != null && mRecipeListViewModel.ismViewingRecipes()) {
                 mRecipeListViewModel.setmIsPerformingQuery(false);
-            mAdapter.setmRecipes(recipes);
+                mAdapter.setmRecipes(recipes);
+                if (recipes.size() < 30 || recipes.size() % 30 != 0) {
+                    mAdapter.displayExhausted();
+                }
+
+            }
+
         });
     }
 
