@@ -70,7 +70,7 @@ public class RecipeActivity extends BaseActivity {
                 mScrollView.setVisibility(View.VISIBLE);
                 try {
                     setUIproperties(recipe);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -85,7 +85,7 @@ public class RecipeActivity extends BaseActivity {
 
     //endregion
     //region set UI properties
-    public void setUIproperties(Recipe recipe) throws IOException {
+    public void setUIproperties(Recipe recipe) {
 
 
         mRecipeTitles.setText(recipe.getTitle());

@@ -1,4 +1,6 @@
 package com.example.foodrecipe.viewmodels;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -32,6 +34,7 @@ public class RecipeListViewModel extends ViewModel {
         mViewingRecipes = true;
         if(pageNumber == 0)
             pageNumber = 1;
+
         mRecipeRepository.searchRecipesApi(query, pageNumber);
     }
     //endregion
@@ -43,6 +46,9 @@ public class RecipeListViewModel extends ViewModel {
         this.mViewingRecipes = mViewingRecipes;
     }
     //endregion
+    public LiveData<Boolean> getTimeout(){
+        return mRecipeRepository.getTimeout();
+    }
     //region onBackPressed
     public boolean onBackPressed(){
         if(mIsPerformingQuery){
@@ -58,9 +64,6 @@ public class RecipeListViewModel extends ViewModel {
     }
     //endregion
     //region set/get ispreforming  query
-    public  boolean ismIsPerformingQuery(){
-        return mIsPerformingQuery;
-    }
     public void setmIsPerformingQuery(boolean isPerformingQuery){
         this.mIsPerformingQuery = isPerformingQuery;
     }

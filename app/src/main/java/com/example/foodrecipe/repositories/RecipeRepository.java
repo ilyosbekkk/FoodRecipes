@@ -1,9 +1,12 @@
 package com.example.foodrecipe.repositories;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 
 
 import com.example.foodrecipe.models.Recipe;
+import com.example.foodrecipe.requests.RecipeApi;
 import com.example.foodrecipe.requests.RecipeApiClient;
 
 import java.util.List;
@@ -41,7 +44,14 @@ public class RecipeRepository {
         }
         mQuery = query;
         mPageNumber = pageNumber;
-        mRecipeApiClient.searchRecipesApi(query, pageNumber);
+        mRecipeApiClient.searchRecipesApi(mQuery,  mPageNumber);
+
+
+
+    }
+
+    public LiveData<Boolean> getTimeout(){
+        return mRecipeApiClient.getmTimeOut();
     }
 
     public void getRecipeApi(String recipe_id){

@@ -1,12 +1,9 @@
 package com.example.foodrecipe.adapters;
 
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,17 +12,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.foodrecipe.R;
 import com.example.foodrecipe.models.Recipe;
+import com.example.foodrecipe.requests.RecipeApiClient;
 import com.example.foodrecipe.utils.Constants;
 
-import java.lang.reflect.Array;
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.IllegalFormatPrecisionException;
 import java.util.List;
 
 public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    private static final String TAG = "Adapter";
     //region vars
     private List<Recipe> mRecipes;
     private final OnRecipeClickListener mOnRecipeClickListener;
@@ -33,6 +29,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int LOADING_TYPE = 2;
     private static final int CATEGORY_TYPE = 3;
     private static final int EXHAUSTEDE_TYPE = 4;
+    private static final int NETWORKTIMEOUT_TYPE = 5;
 
     public RecipeRecyclerAdapter(OnRecipeClickListener mOnRecipeClickListener) {
         this.mOnRecipeClickListener = mOnRecipeClickListener;
@@ -54,6 +51,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else if (viewType == EXHAUSTEDE_TYPE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_exhausted_list_item, parent, false);
             return new ExhaustedViewHolder(view);
+        } else if (viewType == NETWORKTIMEOUT_TYPE) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.network_timeout, parent, false);
+            return new NetworkTimeoutViewHolder(view);
         }
 
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recipe_list_item, parent, false);
@@ -88,6 +88,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return LOADING_TYPE;
         } else if (mRecipes.get(position).getTitle().equals("EXHAUSTED")) {
             return EXHAUSTEDE_TYPE;
+        }
+        else if(mRecipes.get(position).getTitle().equals("TIMEOUT")){
+            return NETWORKTIMEOUT_TYPE;
         }
         return RECIPE_TYPE;
     }
@@ -145,7 +148,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     //endregion
-
+    //region no more results
     public void displayExhausted() {
         if (!isExhausted()) {
             Recipe recipe = new Recipe();
@@ -166,6 +169,28 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
+
+    public void displayNetworkTimedOut() {
+        if (!isNetworkTimedOut()) {
+            Recipe recipe = new Recipe();
+            recipe.setTitle("TIMEOUT");
+            List<Recipe> recipes = new ArrayList<>();
+            recipes.add(recipe);
+            mRecipes = recipes;
+            notifyDataSetChanged();
+        }
+    }
+
+    private boolean isNetworkTimedOut() {
+
+            if (mRecipes != null) {
+                if (mRecipes.size() > 0) {
+                    return mRecipes.get(mRecipes.size() - 1).getTitle().equals("TIMEOUT"); }
+        }
+        return false;
+    }
+
+    //endregion
     //region getSelectedRecipe
     public Recipe getSelectedRecipe(int position) {
         if (mRecipes != null) {

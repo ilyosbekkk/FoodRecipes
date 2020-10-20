@@ -8,4 +8,5 @@
     <string name="some_recipe_title">Some Recipe title</string>
     <string name="_100">100</string>
     <string name="no_more_results">No more results:(</string>
+    <string name="network_timeout">Network Timeout:(</string>
 </resources>

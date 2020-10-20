@@ -1,18 +1,14 @@
 package com.example.foodrecipe.requests;
 
 import android.util.Log;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.foodrecipe.AppExecutors;
-import com.example.foodrecipe.adapters.RecipeRecyclerAdapter;
 import com.example.foodrecipe.models.Recipe;
 import com.example.foodrecipe.responses.RecipeResponse;
 import com.example.foodrecipe.responses.RecipeSearchResponse;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +28,12 @@ public class RecipeApiClient {
     private static RecipeApiClient instance;
     private final MutableLiveData<List<Recipe>> mRecipes;
     private final MutableLiveData<Recipe> mRecipe;
+    private final MutableLiveData<Boolean> mTimeOut = new MutableLiveData<>();
+    private boolean mIsNetworkTimedOut;
     RetrieveRecipesRunnable mRetrieveRecipesRunnable;
     RetrieveRecipeRunnable mRetrieveRecipeRunnable;
+
+
 
     //endregion
     //region singleton
@@ -60,6 +60,11 @@ public class RecipeApiClient {
     //endregion
     //region individual recipe
 
+
+    public LiveData<Boolean> getmTimeOut() {
+        return mTimeOut;
+    }
+
     public LiveData<Recipe> getRecipe() {
         return mRecipe;
     }
@@ -74,8 +79,12 @@ public class RecipeApiClient {
         AppExecutors.getInstance().networkIO().schedule(() -> {
             //Let the User know it is timeout
             handler.cancel(true);
+            mTimeOut.postValue(true);
+
 
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+
+
     }
 
     //endregion
@@ -90,12 +99,28 @@ public class RecipeApiClient {
         final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipeRunnable);
 
         AppExecutors.getInstance().networkIO().schedule(() -> {
+
             handler.cancel(true);
-        }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+            mTimeOut.postValue(true);
+
+
+        },NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
 
     }
 
+
+
     //endregion
+
+
+    public void setmIsNetworkTimedOut(boolean mIsNetworkTimedOut) {
+        this.mIsNetworkTimedOut = mIsNetworkTimedOut;
+    }
+
+    public boolean ismIsNetworkTimedOut() {
+        return mIsNetworkTimedOut;
+    }
+
     //region retrieveRecipeRunnable
     private class RetrieveRecipesRunnable implements Runnable {
 
@@ -226,5 +251,8 @@ public class RecipeApiClient {
         }
     }
     //endregion
+
+
+
 
 }

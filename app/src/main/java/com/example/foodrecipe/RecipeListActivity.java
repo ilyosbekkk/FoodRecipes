@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,9 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foodrecipe.adapters.OnRecipeClickListener;
 import com.example.foodrecipe.adapters.RecipeRecyclerAdapter;
 import com.example.foodrecipe.models.Recipe;
+import com.example.foodrecipe.requests.RecipeApiClient;
 import com.example.foodrecipe.utils.VerticalSpacingItemDecorator;
 import com.example.foodrecipe.viewmodels.RecipeListViewModel;
-import com.google.gson.internal.$Gson$Preconditions;
+
+import java.util.Arrays;
 
 
 public class RecipeListActivity extends BaseActivity implements OnRecipeClickListener {
@@ -32,7 +34,6 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     //region Vars
     RecipeRecyclerAdapter mAdapter;
     private RecipeListViewModel mRecipeListViewModel;
-    private static final String TAG = "RecipeListActivity";
     private SearchView mSearchView;
 
     //endregion
@@ -46,6 +47,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
         mSearchView = findViewById(R.id.searchView);
 
         subscribeObservers();
+        subscribeNetworkObserver();
         initRecyclerView();
         initSearchView();
         if (!mRecipeListViewModel.ismViewingRecipes())
@@ -68,6 +70,13 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
 
             }
 
+        });
+    }
+
+    private void subscribeNetworkObserver(){
+        mRecipeListViewModel.getTimeout().observe(this, aBoolean -> {
+            if(aBoolean)
+                mAdapter.displayNetworkTimedOut();
         });
     }
 
@@ -95,6 +104,11 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     //region onClickListener override methods
     @Override
     public void onRecipeClick(int position) {
+
+        Log.d("RecipeClick", "onRecipeClick: " + mAdapter.getSelectedRecipe(position).getTitle());
+        Log.d("RecipeClick", "onRecipeClick: " + Arrays.toString(mAdapter.getSelectedRecipe(position).getIngredients()));
+        Log.d("RecipeClick", "onRecipeClick: " + mAdapter.getSelectedRecipe(position).getImage_url());
+
         Intent intent = new Intent(this, RecipeActivity.class);
         intent.putExtra("recipe", mAdapter.getSelectedRecipe(position));
         startActivity(intent);
